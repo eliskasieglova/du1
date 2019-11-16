@@ -11,11 +11,11 @@ Marinovo zobrazení: *y=R\*u*
 Mercatorovo zobrazení: *y=R\*ln(cotg(u/2))*
 Braunovo zobrazení: *y=2\*R\*tg(u/2)*
 Lambertovo zobrazení: *y=R\*sin(u)*
-Souřadnice počítám pomocí for-cyklu po 10°. Uložím je do seznamů rovnobezky[] a poledniky[].
-Mercatorovo zobrazení trochu zlobí kvůli přirozenému logaritmu ve vzorečku (není možné počítat se zápornými hodnotami nebo dělit nulou) - proto vytvořím seznam pouze pro pozizivní hodnoty (range(80,9,-10)) a poté pomocí for-cyklu přidám záporné hodnoty.
+Souřadnice počítám pomocí cyklu po 10°. Uložím je do seznamů rovnobezky[] a poledniky[].
+Mercatorovo zobrazení  (není možné počítat se zápornými hodnotami nebo dělit nulou) - proto vytvořím seznam pouze pro pozizivní hodnoty (range(80,9,-10)) a poté pomocí for-cyklu přidám záporné hodnoty.
 
 Další část programu je vykreslování mřížky k zadanému zobrazení.
 
 Mercatorovo zobrazení musí být ošetřeno individuálně, protože póly na něm leží v nekonečnu.
 
-Po vykreslení mřížky se program uživatele zeptá na zeměpisné souřadnice. Výsledkem jsou souřadnice přepočítané do dané mřížky.
+Po vykreslení mřížky se program uživatele zeptá na zeměpisné souřadnice. Výsledkem jsou souřadnice přepočítané do daného zobrazení.

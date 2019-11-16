@@ -38,11 +38,11 @@ def vypis(zobrazeni,meritko,poledniky,rovnobezky):
     print("Poledníky: ", end= " ")
     nahradit_velke_hodnoty(poledniky)
 
-def spocti_delku(R,stupen_sirka,meritko):
+def spocti_delku(R,stupen_delka,meritko):
     """vrati souradnice poledniku podle vzorecku x=R*v"""
-    return ((R * math.radians(stupen_sirka)) / meritko)
+    return ((R * math.radians(stupen_delka)) / meritko)
 
-def spocti_sirku(zobrazeni,stupen_sirka, meritko, R):
+def spocti_sirku(R,stupen_sirka, meritko, zobrazeni):
     """vrati souradnice rovnobezek podle zobrazeni"""
     if zobrazeni == "A":  # Marinovo:  x=R*v   y=R*u
         return (((R * math.radians(stupen_sirka)) / meritko))
@@ -66,7 +66,7 @@ def nahradit_velke_hodnoty(seznam):
 if zobrazeni == "M":
     #pokud si uzivatel vybere Mercatorovo zobrazeni, je potreba vyjimka (poly lezi v nekonecnu)
     for stupen_sirka in range(80, 9, -10):
-        rovnobezka_bod = spocti_sirku(zobrazeni, stupen_sirka, meritko, R)
+        rovnobezka_bod = spocti_sirku(R, stupen_sirka, meritko, zobrazeni)
         rovnobezky.append(round(rovnobezka_bod, 1))
     #přidám 0 na první (nulté) místo v seznamu
     rovnobezky.insert(0, 0)
@@ -77,7 +77,7 @@ if zobrazeni == "M":
 else:
     #pro ostatni zobrazeni plati:
     for stupen_sirka in range(-90, 91, 10):
-        rovnobezka_bod = spocti_sirku(zobrazeni, stupen_sirka, meritko, R)
+        rovnobezka_bod = spocti_sirku(R, stupen_sirka, meritko, zobrazeni)
         rovnobezky.append(round(rovnobezka_bod, 1))
 
 #vypocet poledniku - pro vsechny zobrazeni stejne
@@ -109,57 +109,73 @@ def posun_o_10_stupnu(seznam,index):
     forward(seznam[index]  * 10 - seznam[index+1] * 10)
     right(90)
 
-#zrychlime zelvu
-speed(10)
-#posune želvu nahoru
-penup()
-left(90)
-forward(polednik_delka)
-right(90)
-pendown()
+def nakresli_mrizku(polednik_delka,rovnobezka_delka,polednik_delka_mercator,rovnobezky,poledniky):
+    #zrychlime zelvu
+    speed(10)
+    #posune želvu nahoru
+    penup()
+    left(90)
+    forward(polednik_delka)
+    right(90)
+    pendown()
 
 
-#kresli rovnobezky
-for i in range(len(rovnobezky)-1):
+    #kresli rovnobezky
+    for i in range(len(rovnobezky)-1):
+        kresli(rovnobezka_delka)
+        posun_o_10_stupnu(rovnobezky,i)
+    #nakresli posledni rovnobezku
     kresli(rovnobezka_delka)
-    posun_o_10_stupnu(rovnobezky,i)
-#nakresli posledni rovnobezku
-kresli(rovnobezka_delka)
-#vrati se zpatky do body 0,0=
-left(90)
-forward(polednik_delka)
-#posune se úplně doprava:
-right(90)
-forward(rovnobezka_delka)
-right(90)
+    #vrati se zpatky do body 0,0=
+    left(90)
+    forward(polednik_delka)
+    #posune se úplně doprava:
+    right(90)
+    forward(rovnobezka_delka)
+    right(90)
 
-#kresli poledníky:
-if zobrazeni == "M":    #výjimka pro Mercatorovo zobrazení (póly leží v nekonečnu)
-    for k in range(len(poledniky)-1):
+    #kresli poledníky:
+    if zobrazeni == "M":    #výjimka pro Mercatorovo zobrazení (póly leží v nekonečnu)
+        for k in range(len(poledniky)-1):
+            kresli(polednik_delka_mercator)
+            posun_o_10_stupnu(poledniky,k)
         kresli(polednik_delka_mercator)
-        posun_o_10_stupnu(poledniky,k)
-    kresli(polednik_delka_mercator)
-else:
-    for k in range(len(poledniky)-1):
+    else:
+        for k in range(len(poledniky)-1):
+            kresli(polednik_delka)
+            posun_o_10_stupnu(poledniky,k)
         kresli(polednik_delka)
-        posun_o_10_stupnu(poledniky,k)
-    kresli(polednik_delka)
 
-exitonclick()
+    exitonclick()
+
+nakresli_mrizku(polednik_delka,rovnobezka_delka,polednik_delka_mercator,rovnobezky,poledniky)
+
 
 #####################konec zelvy
 
 print()
 print()
 
-zadana_sirka = float(input("Zadejte zeměpisnou šířku: "))
-zadana_delka = float(input("Zadejte zeměpisnou délku: "))
-#ptani se na zemepisne souradnice
-while zadana_sirka and zadana_delka != 0:
-    print("Souřadnice zeměpisné šířky:", spocti_sirku(zobrazeni, zadana_sirka, meritko, R))
+def nacti_sirku():
+    cislo = float(input())
+    while cislo < -90 or cislo > 90:
+        cislo = float(input("Zadejte znovu: "))
+    return cislo
+
+def nacti_delku():
+    cislo = float(input())
+    while cislo < -180 or cislo > 180:
+        cislo = float(input("Zadejte znovu: "))
+    return cislo
+
+zadana_sirka = 1
+zadana_delka = 1
+while zadana_sirka !=0 and zadana_delka != 0:
+    print("Zadejte zeměpisnou šířku: ")
+    zadana_sirka = nacti_sirku()
+    print("Zadejte zeměpisnou délku: ")
+    zadana_delka = nacti_delku()
+    print("Souřadnice zeměpisné šířky:", spocti_sirku(R, zadana_sirka, meritko, zobrazeni))
     print("Souřadnice zeměpisné délky:", spocti_delku(R, zadana_delka, meritko))
-    zadana_sirka = float(input("Zadejte zeměpisnou šířku: "))
-    zadana_delka = float(input("Zadejte zeměpisnou délku: "))
-    #muzu pouzit funkce, ktere jsem si vytvorila na zacatku pro vypocet souradnic rovnobezek a poledniku po 10°
 
 print("Konec")
